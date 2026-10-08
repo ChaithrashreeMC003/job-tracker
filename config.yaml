@@ -29,6 +29,7 @@ results_per_search: 30
 # ----------------------------------------------------------------------------
 # Skill vocabulary for .NET roles. Only skills detected in the resume
 # drive matching; the full list drives the "Changes Needed" comparison.
+# Set use_resume_skills to true to filter jobs by skills found in RESUME_TEXT secret.
 # ----------------------------------------------------------------------------
 use_resume_skills: true
 required_skills:
@@ -74,5 +75,7 @@ min_daily_new_jobs: 10
 # Excel output filename (a dated copy is also kept for history)
 output_filename: "DotNet_Developer_Jobs.xlsx"
 
-# Path to your resume (checked into the repo — see README for privacy notes)
+# Resume path is now read from RESUME_TEXT environment variable (GitHub Secret)
+# This file path is kept for backwards compatibility but will be ignored if
+# RESUME_TEXT environment variable is set.
 resume_path: "resume/resume.pdf"
