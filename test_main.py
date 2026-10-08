@@ -34,12 +34,12 @@ class JobMatchingTests(unittest.TestCase):
         self.assertFalse(main.skill_found_in_text(".NET", "networking"))
         self.assertFalse(main.skill_found_in_text("SQL", "NoSQL"))
 
-    def test_only_resume_skills_drive_matching(self):
+    def test_resume_skills_with_configured_fallback(self):
         config = {"required_skills": [".NET", "C#", "Angular"], "use_resume_skills": True}
         self.assertEqual(main.get_matching_skills(config, "dotnet C#"), [".NET", "C#"])
         for text in ["", "Unrecognized skills"]:
-            with self.subTest(text=text), self.assertRaises(ValueError):
-                main.get_matching_skills(config, text)
+            with self.subTest(text=text), patch("builtins.print"):
+                self.assertEqual(main.get_matching_skills(config, text), config["required_skills"])
         config["use_resume_skills"] = False
         self.assertEqual(main.get_matching_skills(config, ""), config["required_skills"])
 
@@ -48,6 +48,37 @@ class JobMatchingTests(unittest.TestCase):
         self.assertEqual(main.compute_changes_needed(
             job, ".NET C# Entity Framework", [".NET", "C#", "Angular", "Entity Framework"],
         ), "Angular")
+
+    def test_main_resume_secret_without_pdf(self):
+        config = {
+            "required_skills": [".NET", "C#"], "use_resume_skills": True,
+            "resume_path": "resume/resume.pdf",
+        }
+        credentials = {name: "test" for name in [
+            "ADZUNA_APP_ID", "ADZUNA_APP_KEY", "EMAIL_ADDRESS", "EMAIL_APP_PASSWORD", "EMAIL_TO",
+        ]}
+        for resume_text, pdf_text in [
+            (".NET C#", ""), ("  .NET C#\n", ""),
+            ("", ".NET C#"), (" \n", ".NET C#"), ("", ""),
+        ]:
+            with (
+                self.subTest(resume_text=resume_text, pdf_text=pdf_text),
+                patch.dict(main.os.environ, {**credentials, "RESUME_TEXT": resume_text}),
+                patch.object(main, "load_yaml", side_effect=[config, {"companies": []}]),
+                patch.object(main, "extract_resume_text", return_value=pdf_text) as extract,
+                patch.object(main, "collect_adzuna_jobs", return_value=[]) as fetch,
+                patch.object(main, "fetch_all_companies", return_value=([], [])),
+                patch.object(main, "load_seen_jobs", return_value={}),
+                patch.object(main, "send_email") as email,
+                patch("builtins.print"),
+            ):
+                main.main()
+                fetch.assert_called_once()
+                if resume_text.strip():
+                    extract.assert_not_called()
+                else:
+                    extract.assert_called_once_with(main.HERE / config["resume_path"])
+                email.assert_not_called()
 
     def test_main_filters_before_reports_and_seen_tracking(self):
         config = {
@@ -70,6 +101,7 @@ class JobMatchingTests(unittest.TestCase):
         env = {name: "test" for name in [
             "ADZUNA_APP_ID", "ADZUNA_APP_KEY", "EMAIL_ADDRESS", "EMAIL_APP_PASSWORD", "EMAIL_TO",
         ]}
+        env["RESUME_TEXT"] = ""
         with (
             patch.dict(main.os.environ, env),
             patch.object(main, "load_yaml", side_effect=[config, {"companies": []}]),
