@@ -132,10 +132,12 @@ def get_matching_skills(config, resume_text):
     if not config.get("use_resume_skills", False):
         return skills
     if not resume_text.strip():
-        raise ValueError("Resume-based search requires a readable resume PDF.")
+        print("[WARN] Resume not found or unreadable; falling back to configured skills.", file=sys.stderr)
+        return skills
     matched = [skill for skill in skills if skill_found_in_text(skill, resume_text)]
     if not matched:
-        raise ValueError("No configured skills found in the resume; update required_skills.")
+        print("[WARN] No configured skills found in the resume; falling back to configured skills.", file=sys.stderr)
+        return skills
     return matched
 
 
@@ -247,14 +249,19 @@ def remove_already_seen(jobs, seen_dict):
 
 
 def extract_resume_text(resume_path):
-    if not Path(resume_path).exists():
+    resume_file = Path(resume_path)
+    if not resume_file.exists():
         print(f"[WARN] Resume not found at {resume_path}.", file=sys.stderr)
         return ""
-    text = []
-    with pdfplumber.open(resume_path) as pdf:
-        for page in pdf.pages:
-            text.append(page.extract_text() or "")
-    return "\n".join(text)
+    try:
+        with pdfplumber.open(resume_file) as pdf:
+            text = []
+            for page in pdf.pages:
+                text.append(page.extract_text() or "")
+        return "\n".join(text)
+    except Exception as exc:
+        print(f"[WARN] Could not read resume PDF at {resume_path}: {exc}", file=sys.stderr)
+        return ""
 
 
 def compute_changes_needed(job, resume_text, required_skills):
@@ -432,4 +439,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-   
