@@ -114,7 +114,6 @@ GSPANN (lever/gspann): HTTP 404
 Onix (lever/onix): HTTP 404
 Persistent Systems (greenhouse/persistent): HTTP 404
 NVIDIA (greenhouse/nvidia): HTTP 404
-Standard Chartered (smartrecruiters/StandardChartered): HTTP 400
 Booking.com (greenhouse/bookingcom): HTTP 404
 Yahoo (greenhouse/yahoo): HTTP 404
 Wayfair (greenhouse/wayfair): HTTP 404
