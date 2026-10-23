@@ -55,7 +55,7 @@ HackerEarth (lever/hackerearth): HTTP 404
 Uplers (lever/uplers): HTTP 404
 Deqode (lever/deqode): HTTP 404
 Springworks (lever/springworks): HTTP 404
-Zluri (lever/zluri): HTTP 404
+Zluri (lever/zluri): HTTP 502
 Amagi (greenhouse/amagi): HTTP 404
 Zoho (greenhouse/zoho): HTTP 404
 Ather Energy (greenhouse/atherenergy): HTTP 404
