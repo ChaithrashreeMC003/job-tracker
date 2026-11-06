@@ -32,7 +32,7 @@ Unacademy (greenhouse/unacademy): HTTP 404
 upGrad (greenhouse/upgrad): HTTP 404
 Simplilearn (greenhouse/simplilearn): HTTP 404
 Cure.fit (cult.fit) (greenhouse/cultfit): HTTP 404
-Rebel Foods (lever/rebelfoods): HTTP 404
+Rebel Foods (lever/rebelfoods): HTTPSConnectionPool(host='api.lever.co', port=443): Read timed out. (read timeout=15)
 Licious (greenhouse/licious): HTTP 404
 BharatPe (greenhouse/bharatpe): HTTP 404
 MPL (Mobile Premier League) (greenhouse/mpl): HTTP 404
@@ -50,7 +50,7 @@ Acko (greenhouse/acko): HTTP 404
 Digit Insurance (greenhouse/godigit): HTTP 404
 PolicyBazaar (greenhouse/policybazaar): HTTP 404
 Lenskart (greenhouse/lenskart): HTTP 404
-Curefoods (lever/curefoods): HTTP 404
+Curefoods (lever/curefoods): HTTPSConnectionPool(host='api.lever.co', port=443): Read timed out. (read timeout=15)
 HackerEarth (lever/hackerearth): HTTP 404
 Uplers (lever/uplers): HTTP 404
 Deqode (lever/deqode): HTTP 404
